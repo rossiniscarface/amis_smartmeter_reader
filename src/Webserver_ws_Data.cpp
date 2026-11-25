@@ -23,6 +23,7 @@
 #include "__compiled_constants.h"
 
 #include <ESPAsyncWebServer.h>
+#include <amis.h>
 #include <LittleFS.h>
 
 #include "Webserver_ws_Data_cmd_status.inl"

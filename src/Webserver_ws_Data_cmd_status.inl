@@ -79,10 +79,11 @@ static String getStatusJsonInfoLibrary()
   "library_AsyncPing_esp8266": "95ac7e4ce1d4b41087acc0f7d8109cfd1f553881",
   "library_ESPAsyncUDP": "0.0.0-alpha+sha.697c75a025",
   "library_ESPAsyncTCP": "2.0.0",
-  "library_ESPAsyncWebServer": "3.6.0"
+  "library_ESPAsyncWebServer": "3.6.0",
+  "library_libamis": "0.4.0"
 }
 */
-    DynamicJsonDocument doc(384);
+    DynamicJsonDocument doc(448);
     if (doc.capacity() == 0) {
         // out of memory
         return "";
@@ -95,6 +96,7 @@ static String getStatusJsonInfoLibrary()
     doc[F("library_ESPAsyncUDP")] = "0.0.0-alpha+sha.697c75a025";
     doc[F("library_ESPAsyncTCP")] = "2.0.0";
     doc[F("library_ESPAsyncWebServer")] = ASYNCWEBSERVER_VERSION;
+    doc[F("library_libamis")] = LIBAMIS_VERSION;
 
     String buffer;
     SERIALIZE_JSON_LOG(doc, buffer);

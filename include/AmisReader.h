@@ -4,6 +4,8 @@
 #include <LittleFS.h>
 #include <time.h>
 
+#include <amis.h> // libamis: M-Bus, E5, AES-128, Datensaetze
+
 // TODO(anyone): Refactor this global vars
 extern uint8_t dow;
 extern uint8_t mon, myyear;
@@ -98,9 +100,9 @@ private:
     void processStateCounters(const uint32_t msNow);
     void processStateReadBillingDataset(const uint32_t msNow);
 
-    void moveSerialBufferToDecodingWorkBuffer(size_t n);
-
-    int decodeBuffer(uint8_t *buffer, size_t len, AmisReaderNumResult_t &result);
+    int convertReading(const amis::Reading &reading, AmisReaderNumResult_t &result);
+    void onCounterResult(uint8_t status, const uint32_t msNow);
+    void handleIecActions(uint8_t act);
 
 #if (AMISREADER_SIMULATE_SERIAL)
     size_t pollSerialSimulateSerialInput();
@@ -126,10 +128,10 @@ private:
     //unsigned long _lastSerialEvent;
     uint8_t _bytesInBufferExpectd;
 
-    uint8_t _decodingWorkBuffer[128];
-    size_t _decodingWorkBufferLength=0;
-
     uint8_t _key[16];
+    amis::Reader _mbus; // libamis Lesekern fuer die Zaehlerdaten (M-Bus)
+    amis::IecReader _iec; // libamis IEC 62056-21: Seriennummer und Verrechnungsdatensatz
+    bool _logSerialPending = false;
 
     AmisReadSerialnumberMode_t _readSerialNumberMode = tryRead;
 
@@ -146,6 +148,7 @@ private:
     File _billingDataset;
     size_t _billingDatasetRead=0;
     size_t _billingDatasetReadPrev=0;
+    bool _billingDatasetComplete=false; // nur dann <ident>_vd.txt ersetzen
 };
 
 extern AmisReaderClass AmisReader;
